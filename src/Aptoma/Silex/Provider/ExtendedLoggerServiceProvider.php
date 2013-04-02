@@ -35,9 +35,18 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
                             $app['monolog.level']
                         );
                         $logstashHandler->setFormatter(new LogstashFormatter($app['monolog.name']));
-                        $logstashHandler->pushProcessor(
-                            new ExtraContextProcessor($this->getLogstashExtraContextFields($app))
-                        );
+
+                        $extras = array();
+                        if ($app->offsetExists('meta.service')) {
+                            $extras['service'] = $app['meta.service'];
+                        }
+                        if ($app->offsetExists('meta.customer')) {
+                            $extras['customer'] = $app['meta.customer'];
+                        }
+                        if ($app->offsetExists('meta.environment')) {
+                            $extras['customer'] = $app['meta.environment'];
+                        }
+                        $logstashHandler->pushProcessor(new ExtraContextProcessor($extras));
 
                         $logger->pushHandler($logstashHandler);
                     }
@@ -57,21 +66,5 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-    }
-
-    private function getLogstashExtraContextFields(\Pimple $app)
-    {
-        $extras = array();
-        if ($app->offsetExists('meta.service')) {
-            $extras['service'] = $app['meta.service'];
-        }
-        if ($app->offsetExists('meta.customer')) {
-            $extras['customer'] = $app['meta.customer'];
-        }
-        if ($app->offsetExists('meta.environment')) {
-            $extras['customer'] = $app['meta.environment'];
-        }
-
-        return $extras;
     }
 }
