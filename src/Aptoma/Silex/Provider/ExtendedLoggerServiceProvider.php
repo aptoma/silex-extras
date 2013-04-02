@@ -44,7 +44,7 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
                             $extras['customer'] = $app['meta.customer'];
                         }
                         if ($app->offsetExists('meta.environment')) {
-                            $extras['customer'] = $app['meta.environment'];
+                            $extras['environment'] = $app['meta.environment'];
                         }
                         $logstashHandler->pushProcessor(new ExtraContextProcessor($extras));
 
