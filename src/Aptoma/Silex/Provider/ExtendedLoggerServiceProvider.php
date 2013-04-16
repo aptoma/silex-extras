@@ -29,30 +29,32 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
                     Logger $logger,
                     \Pimple $app
                 ) {
-                    if ($app['monolog.logstashfile']) {
-                        $logstashHandler = new StreamHandler(
-                            $app['monolog.logstashfile'],
-                            $app['monolog.level']
-                        );
-                        $logstashHandler->setFormatter(new LogstashFormatter($app['monolog.name']));
-
-                        $extras = array();
-                        if ($app->offsetExists('meta.service')) {
-                            $extras['service'] = $app['meta.service'];
-                        }
-                        if ($app->offsetExists('meta.customer')) {
-                            $extras['customer'] = $app['meta.customer'];
-                        }
-                        if ($app->offsetExists('meta.environment')) {
-                            $extras['environment'] = $app['meta.environment'];
-                        }
-                        $logstashHandler->pushProcessor(new ExtraContextProcessor($extras));
-
-                        $logger->pushHandler($logstashHandler);
-                    }
-
                     $processor = new RequestProcessor($app);
                     $logger->pushProcessor($processor);
+
+                    if (!($app->offsetExists('monolog.logstashfile') && $app['monolog.logstashfile'])) {
+                        return $logger;
+                    }
+
+                    $logstashHandler = new StreamHandler(
+                        $app['monolog.logstashfile'],
+                        $app['monolog.level']
+                    );
+                    $logstashHandler->setFormatter(new LogstashFormatter($app['monolog.name']));
+
+                    $extras = array();
+                    if ($app->offsetExists('meta.service')) {
+                        $extras['service'] = $app['meta.service'];
+                    }
+                    if ($app->offsetExists('meta.customer')) {
+                        $extras['customer'] = $app['meta.customer'];
+                    }
+                    if ($app->offsetExists('meta.environment')) {
+                        $extras['environment'] = $app['meta.environment'];
+                    }
+                    $logstashHandler->pushProcessor(new ExtraContextProcessor($extras));
+
+                    $logger->pushHandler($logstashHandler);
 
                     return $logger;
                 }
