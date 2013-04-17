@@ -12,10 +12,6 @@ module.exports = function (grunt) {
 
             // files to be used (minimatch syntax) - https://github.com/isaacs/minimatch
             files: {
-                jshint: [
-                    'Gruntfile.js',
-                    'web/js/**/*.js'
-                ],
                 phplint: [
                     'src/*.php',
                     'tests/*.php'
@@ -99,7 +95,6 @@ module.exports = function (grunt) {
 
     // Tasks from NPM
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
 
     // Task aliases
     grunt.registerTask('phpunit', 'PHP Unittests', 'exec:phpunit');
