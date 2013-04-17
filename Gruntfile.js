@@ -82,9 +82,7 @@ module.exports = function (grunt) {
                 'ci-prepare': {
                     cmd: 'curl -s https://getcomposer.org/installer | php' +
                         '&& php composer.phar --dev install' +
-                        '&& rm composer.phar ' +
-                        '&& mkdir -p app/log ' +
-                        '&& mkdir -p app/cache'
+                        '&& rm composer.phar '
                 },
 
                 'npm-install': {
