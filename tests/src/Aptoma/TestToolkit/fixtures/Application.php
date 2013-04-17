@@ -11,4 +11,3 @@ class Application extends BaseApplication
         parent::__construct($values);
     }
 }
-
