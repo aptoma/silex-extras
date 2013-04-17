@@ -10,7 +10,7 @@ class BaseWebTestCaseTest extends BaseWebTestCase
 
     public function setUp()
     {
-        $this->pathToAppBootstrap = __DIR__ . '/fixtures/app.php';
+        $this->pathToAppBootstrap = __DIR__ . '/mocks/app.php';
         parent::setUp();
     }
 
