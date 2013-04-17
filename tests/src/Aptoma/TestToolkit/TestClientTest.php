@@ -43,6 +43,20 @@ class TestClientTest extends BaseWebTestCase
         $client->putJson('/url', array('foo' => 'bar'));
     }
 
+    public function testGetResponse()
+    {
+        $client = $this->createClient();
+        $this->app->get(
+            '/',
+            function () {
+                return 'index';
+            }
+        );
+
+        $client->request('GET', '/');
+        $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Response', $client->getResponse());
+    }
+
     private function getMockTestClient()
     {
         return $this->getMock('\Aptoma\TestToolkit\TestClient', array('request'), array($this->app));

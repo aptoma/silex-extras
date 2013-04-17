@@ -9,6 +9,10 @@ class BaseWebTestCase extends WebTestCase
 {
 
     protected $pathToAppBootstrap;
+    /**
+     * @var Application
+     */
+    protected $app;
 
     public function createApplication()
     {
@@ -39,14 +43,18 @@ class BaseWebTestCase extends WebTestCase
     /**
      * Create a client with basic auth credentials.
      *
+     * @param array $server
      * @return TestClient
      */
-    protected function createAuthorizedClient()
+    protected function createAuthorizedClient(array $server = array())
     {
         return $this->createClient(
-            array(
-                'PHP_AUTH_USER' => 'username',
-                'PHP_AUTH_PW'   => 'password',
+            array_merge(
+                array(
+                    'PHP_AUTH_USER' => 'username',
+                    'PHP_AUTH_PW'   => 'password',
+                ),
+                $server
             )
         );
     }
