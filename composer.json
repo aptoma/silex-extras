@@ -10,7 +10,7 @@
         }
     },
     "require": {
-        "silex/silex": "1.0.*@dev",
+        "silex/silex": "~1.0",
         "symfony/browser-kit": "~2.2",
         "symfony/css-selector": "~2.2",
         "monolog/monolog": "~1.4",
