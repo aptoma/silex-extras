@@ -19,7 +19,7 @@ class TestClientTest extends BaseWebTestCase
                 $this->equalTo('/url'),
                 $this->equalTo(array()),
                 $this->equalTo(array()),
-                $this->equalTo(array()),
+                $this->equalTo(array('CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json')),
                 $this->equalTo(json_encode(array('foo' => 'bar')))
             );
 
@@ -37,7 +37,7 @@ class TestClientTest extends BaseWebTestCase
                 $this->equalTo('/url'),
                 $this->equalTo(array()),
                 $this->equalTo(array()),
-                $this->equalTo(array()),
+                $this->equalTo(array('CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json')),
                 $this->equalTo(json_encode(array('foo' => 'bar')))
             );
 
