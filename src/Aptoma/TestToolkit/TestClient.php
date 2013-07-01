@@ -20,7 +20,7 @@ class TestClient extends BaseClient
             $url,
             array(),
             array(),
-            array(),
+            array('CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'),
             json_encode($data)
         );
     }
@@ -39,7 +39,7 @@ class TestClient extends BaseClient
             $url,
             array(),
             array(),
-            array(),
+            array('CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'),
             json_encode($data)
         );
     }

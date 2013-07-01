@@ -18,6 +18,41 @@ default configuration for integration 3rd party modules consistently.
 - Error handler that outputs stuff as json if `Accept: application/json`
 - TestToolkit to bootstrap functional testing of Silex applications
 - API key user authentication
+- Storage interface, with local file and Level3 implementations
+- Ftp upload abstraction, basically a wrapper around native FTP functionality
+- Level3 upload service, for uploading stuff to Level3
+
+### Aptoma\Ftp
+
+Wraps native PHP FTP functions in an object oriented manner. It's designed for
+working with Level3 CDN, and thus has a concept of multiple paths for upload.
+
+Usage:
+
+````PHP
+$ftp = new Ftp($hostname, $username, $password, $logger);
+$file = new File($pathToFile);
+
+$destination = 'path/on/server/with/filename.txt';
+// All directories needs to be created before upload
+$ftp->preparePaths(array($destination));
+$ftp->put($destination, $file->getRealPath());
+````
+
+The class has a few more features for validating upload integrity and moving
+the file to publish location after upload. Read the source :)
+
+### Aptoma\Service\Level3Service
+
+Provides an abstraction for uploading files to Level3. You need to provide a
+an `Ftp` instance and various paths, and can then simply do:
+`$service->upload($fileContents, $targetFileName, $relativeLocalTempDir);`.
+
+After upload, the file will be renamed and put in a folder matching it's checksum,
+in order to avoid duplicate uploads, and to deal with Level3's (sensible) limitation
+of max number of files in a directory. The full public url is returned.
+
+There's also a bundled Level3ServiceProvider for simpler integration with Silex.
 
 ### Aptoma\Log
 
