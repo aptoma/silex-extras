@@ -17,6 +17,7 @@ default configuration for integration 3rd party modules consistently.
 - Base Application class for doing common stuff we always do in Silex applications
 - Error handler that outputs stuff as json if `Accept: application/json`
 - TestToolkit to bootstrap functional testing of Silex applications
+- API key user authentication
 
 ### Aptoma\Log
 
@@ -94,3 +95,38 @@ class MyObjectTest extends TestToolkit\BaseWebTestCase
     }
 }
 ````
+
+### Aptoma\Security
+
+Component for API key user authentication.
+
+All it requires is a UserProvider and an encoder to encode the API key.
+It'll typically be used in your app like this:
+
+```php
+$app->register(
+    new Aptoma\Silex\Provider\ApiKeyServiceProvider(),
+    array(
+        'api_key.user_provider' => new App\Specific\UserProvider(),
+        'api_key.encoder' => new App\Specific\Encoder()
+    )
+);
+```
+
+It can then be attached to any firewall of your choice:
+
+```php
+$app->register(
+    new Silex\Provider\SecurityServiceProvider(),
+    array(
+        'security.firewalls' => array(
+            // ...
+            'secured' => array(
+                'pattern' => '^.*$',
+                'api_key' => true
+                // more settings...
+            )
+        )
+    )
+);
+```
