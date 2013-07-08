@@ -3,6 +3,7 @@
 
 namespace Aptoma\TestToolkit;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class TestClientTest extends BaseWebTestCase
@@ -55,6 +56,19 @@ class TestClientTest extends BaseWebTestCase
 
         $client->request('GET', '/');
         $this->assertInstanceOf('\Symfony\Component\HttpFoundation\Response', $client->getResponse());
+    }
+
+    public function testGetJsonDecodedResponseBody()
+    {
+        $client = $this->getMock('\Aptoma\TestToolkit\TestClient', array('getResponse'), array($this->app));
+        $data = array('foo' => 'bar');
+        $response = new Response(json_encode($data), 200);
+        $client
+            ->expects($this->any())
+            ->method('getResponse')
+            ->will($this->returnValue($response));
+
+        $this->assertEquals($data, $client->getJsonDecodedResponseBody());
     }
 
     private function getMockTestClient()

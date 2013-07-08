@@ -53,4 +53,9 @@ class TestClient extends BaseClient
     {
         return parent::getResponse();
     }
+
+    public function getJsonDecodedResponseBody()
+    {
+        return json_decode($this->getResponse()->getContent(), true);
+    }
 }
