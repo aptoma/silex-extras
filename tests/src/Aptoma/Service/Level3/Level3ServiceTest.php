@@ -47,7 +47,7 @@ class Level3ServiceTest extends BaseWebTestCase
     {
         $logger = new Logger('test');
         $ftp = new Ftp(null, null, null, $logger);
-        $service = new Level3Service($ftp, null, null, null, null, $logger);
+        $service = new Level3Service($ftp, null, null, null, $logger);
         return $service;
     }
 }

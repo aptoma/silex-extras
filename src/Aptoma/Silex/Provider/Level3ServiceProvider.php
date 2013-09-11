@@ -26,7 +26,6 @@ class Level3ServiceProvider implements ServiceProviderInterface
                 );
                 return new Level3Service(
                     $ftp,
-                    $app['upload.dir'],
                     $app['level3.tmp_folder'],
                     $app['level3.public_folder'],
                     $app['level3.public_url'],

@@ -4,6 +4,7 @@ namespace Aptoma\Service\Level3;
 
 use Aptoma\Ftp\Exception\FtpException;
 use Aptoma\Ftp\Ftp;
+use Aptoma\Service\Level3\Exception\Level3Exception;
 use Aptoma\Service\Level3\Exception\UploadException;
 use Aptoma\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
@@ -38,20 +39,15 @@ class Level3Service implements StorageInterface
     private $ftp;
 
     /**
-     * @param $ftp
-     * @param $localFolder
+     * @param \Aptoma\Ftp\Ftp $ftp
      * @param $tmpFolder
      * @param $publicFolder
      * @param $publicUrl
      * @param LoggerInterface $logger
      * @param array $options
-     * @internal param $ftpHost
-     * @internal param $ftpUsername
-     * @internal param $ftpPassword
      */
     public function __construct(
         Ftp $ftp,
-        $localFolder,
         $tmpFolder,
         $publicFolder,
         $publicUrl,
@@ -59,11 +55,13 @@ class Level3Service implements StorageInterface
         array $options = array()
     ) {
         $this->ftp = $ftp;
-        $this->localFolder = $localFolder;
         $this->tmpFolder = $tmpFolder;
         $this->publicFolder = $publicFolder;
         $this->publicUrl = $publicUrl;
         $this->logger = $logger;
+        if (isset($options['local_folder'])) {
+            $this->localFolder = $options['local_folder'];
+        }
         if (isset($options['accepted_image_formats'])) {
             $this->acceptedImageFormats = $options['accepted_image_formats'];
         }
@@ -138,10 +136,15 @@ class Level3Service implements StorageInterface
      *
      * @param $fileContents
      * @param $name
+     * @throws Exception\Level3Exception
      * @return string Url to public version of file
      */
     public function upload($fileContents, $name)
     {
+        if (!$this->localFolder) {
+            throw new Level3Exception('Method `upload` requires that you have provided a `local_folder` $option');
+        }
+
         $this->prepareDirectory($this->localFolder);
 
         $tempName = sprintf('%s/%s', $this->localFolder, $name);
