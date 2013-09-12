@@ -22,6 +22,9 @@ class Ftp
 
     public function __construct($hostname, $username, $password, LoggerInterface $logger)
     {
+        if (!extension_loaded('ftp')) {
+            throw new FtpException('Missing FTP PHP extension.');
+        }
         $this->hostname = $hostname;
         $this->username = $username;
         $this->password = $password;
