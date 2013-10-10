@@ -29,8 +29,7 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
                     Logger $logger,
                     \Pimple $app
                 ) {
-                    $processor = new RequestProcessor($app);
-                    $logger->pushProcessor($processor);
+                    $logger->pushProcessor($app['logger.request_processor']);
 
                     if (!($app->offsetExists('monolog.logstashfile') && $app['monolog.logstashfile'])) {
                         return $logger;
@@ -59,6 +58,12 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
                     return $logger;
                 }
             )
+        );
+
+        $app['logger.request_processor'] = $app->share(
+            function () use ($app) {
+                return new RequestProcessor($app);
+            }
         );
     }
 
