@@ -21,6 +21,7 @@ default configuration for integration 3rd party modules consistently.
 - Storage interface, with local file and Level3 implementations
 - Ftp upload abstraction, basically a wrapper around native FTP functionality
 - Level3 upload service, for uploading stuff to Level3
+- ConsoleLoggerServiceProvider, for integrating the logger with the console
 
 ### Aptoma\Ftp
 
@@ -88,6 +89,37 @@ $app['meta.environment'] = 'production'; // The environment of the current insta
 
 These extra fields will help us classify records in our consolidated logging
 infrastructure (Loggly, Logstash and friends), and lead to great success.
+
+### Aptoma\Silex\Provider\ConsoleLoggerServiceProvider
+
+This service provider makes it easy to show log messages from services in the console,
+without having to inject an instance of `OutputInterface` into the services. This
+requires version ~2.4 of Symfony Components. More info about the change is at the
+[Symfony Blog](http://symfony.com/blog/new-in-symfony-2-4-show-logs-in-console).
+
+In your console application, you can now do something like this:
+
+````PHP
+use Symfony\Component\Console\Application;
+
+$app = require 'app.php';
+$console = new Application('My Console Application', '1.0');
+// You should only register this service provider when running commands
+$app->register(new \Aptoma\Silex\Provider\ConsoleLoggerServiceProvider());
+
+$console->addCommands(
+    array(
+    //...
+    )
+);
+
+$app->boot();
+$console->run($app['console.input'], $app['console.output']);
+````
+
+You will still use the normal `OutputInterface` instance for command feedback
+in your commands, but you will now also get output from anything your services
+are logging.
 
 ### Aptoma\Silex\Application
 

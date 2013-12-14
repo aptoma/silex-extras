@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.0
+-----
+
+* New: ConsoleLoggerServiceProvider - Allows piping Monolog logging to stdout when running console commands
+
 1.0.0
 -----
 
