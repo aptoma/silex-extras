@@ -2,6 +2,7 @@
 
 namespace Aptoma\Silex\Provider;
 
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -27,6 +28,13 @@ class ConsoleLoggerServiceProvider implements ServiceProviderInterface
         );
 
         $app['logger.console_format'] = "%start_tag%%level_name%:%end_tag% %message%\n";
+
+        $app['monolog.handler'] = function () use ($app) {
+            $logfile = $app->offsetExists('monolog.console_logfile')
+                ? $app['monolog.console_logfile']
+                : $app['monolog.logfile'];
+            return new StreamHandler($logfile, $app['monolog.level']);
+        };
 
         $app['logger'] = $app->share(
             $app->extend(

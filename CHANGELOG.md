@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.1
+-----
+
+* New: Allow overriding logfile used by console logger
+
 1.1.0
 -----
 

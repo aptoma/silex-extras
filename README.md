@@ -113,13 +113,16 @@ $console->addCommands(
     )
 );
 
-$app->boot();
 $console->run($app['console.input'], $app['console.output']);
 ````
 
 You will still use the normal `OutputInterface` instance for command feedback
 in your commands, but you will now also get output from anything your services
 are logging.
+
+The console logger overrides the default `monolog.handler` in order to allow setting
+a custom log file. If defined, it will use `monolog.console_logfile`, and if not, it
+will fall back to `monolog.logfile`.
 
 ### Aptoma\Silex\Application
 
