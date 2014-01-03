@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.2
+-----
+
+* Enhancement: JsonErrorHandler now handles all exception types, not just HttpExpcetions.
+
 1.1.1
 -----
 
