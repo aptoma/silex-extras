@@ -38,7 +38,7 @@ class JsonErrorHandler
         return $this;
     }
 
-    public function handle(HttpException $e, $code)
+    public function handle(\Exception $e, $code)
     {
         if (!$this->request) {
             try {
@@ -52,6 +52,15 @@ class JsonErrorHandler
             return null;
         }
 
+        if ($e instanceof HttpException) {
+            return $this->handleHttpException($e, $code);
+        }
+
+        return $this->handleGenericException($e, $code);
+    }
+
+    private function handleHttpException(HttpException $e, $code)
+    {
         $message = array(
             'status' => $e->getStatusCode(),
             'code' => $code,
@@ -62,6 +71,21 @@ class JsonErrorHandler
             $message,
             $e->getStatusCode(),
             $e->getHeaders()
+        );
+    }
+
+    private function handleGenericException(\Exception $e, $code)
+    {
+        $message = array(
+            'status' => 500,
+            'code' => $code,
+            'message' => $e->getMessage()
+        );
+
+        return $this->app->json(
+            $message,
+            500,
+            array('Content-Type' => 'application/json')
         );
     }
 }
