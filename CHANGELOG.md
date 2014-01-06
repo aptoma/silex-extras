@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.1.3
+-----
+
+* Enhancement: Add `PsrLogMessageProcessor` when using `ExtendedLoggerServiceProvider`
+
 1.1.2
 -----
 

@@ -7,6 +7,7 @@ use Aptoma\Log\RequestProcessor;
 use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -30,6 +31,7 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
                     \Pimple $app
                 ) {
                     $logger->pushProcessor($app['logger.request_processor']);
+                    $logger->pushProcessor(new PsrLogMessageProcessor());
 
                     if (!($app->offsetExists('monolog.logstashfile') && $app['monolog.logstashfile'])) {
                         return $logger;
