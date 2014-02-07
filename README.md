@@ -3,12 +3,9 @@ Silex Extras
 
 Package consisting of reusable stuff for Silex powered applications.
 
-The vision for this package is to keep DRY. As we get a lot of applications
-built using the same tools, we find that we tend to do the same stuff a lot of
-places. This package seeks to provide default implementations.
-
-This might sound like the first steps towards a new AFW, but this really just
-default configuration for integration 3rd party modules consistently.
+It is collection of various services that will ease bootsrapping new Silex
+applications, keep best practices in sync across projects, and ensure we do
+stuff in a similar manner whenever we do something.
 
 ## What's In It?
 
@@ -22,6 +19,9 @@ default configuration for integration 3rd party modules consistently.
 - Ftp upload abstraction, basically a wrapper around native FTP functionality
 - Level3 upload service, for uploading stuff to Level3
 - ConsoleLoggerServiceProvider, for integrating the logger with the console
+- MemcachedServiceProvider
+- GuzzleServiceProvider for extra Guzzle features
+- Guzzle HttpCallInterceptorPlugin for testing with Guzzle services
 
 ### Aptoma\Ftp
 
@@ -51,7 +51,9 @@ an `Ftp` instance and various paths, and can then simply do:
 
 After upload, the file will be renamed and put in a folder matching it's checksum,
 in order to avoid duplicate uploads, and to deal with Level3's (sensible) limitation
-of max number of files in a directory. The full public url is returned.
+of max number of files in a directory. The full public url is returned. Strictly
+speaking, this isn't actually Level3 specific, but more a two-step strategy for
+validated uploads.
 
 There's also a bundled Level3ServiceProvider for simpler integration with Silex.
 
@@ -61,6 +63,7 @@ This folder provides two classes:
 
 - `ExtraContextProcessor` for always adding a predefined set of extra fields to log entries
 - `RequestProcessor` for adding client ip, unique request token and username to all entries
+- `MonologGuzzleLogAdapater` for integrating Monolog with Guzzle, to log request times and errors
 
 Usage is simple:
 
@@ -173,7 +176,7 @@ Component for API key user authentication.
 All it requires is a UserProvider and an encoder to encode the API key.
 It'll typically be used in your app like this:
 
-```php
+````PHP
 $app->register(
     new Aptoma\Silex\Provider\ApiKeyServiceProvider(),
     array(
@@ -181,11 +184,11 @@ $app->register(
         'api_key.encoder' => new App\Specific\Encoder()
     )
 );
-```
+````
 
 It can then be attached to any firewall of your choice:
 
-```php
+````PHP
 $app->register(
     new Silex\Provider\SecurityServiceProvider(),
     array(
@@ -199,4 +202,80 @@ $app->register(
         )
     )
 );
-```
+````
+
+### MemcachedServiceProvider
+
+Registers Memcached as a service, and takes care of prefixes and persistent connections.
+It returns an instance of \Memcached.
+It also provides a generic cache compatible with Doctrine\Common\Cache.
+
+````PHP
+
+$app['memcached.identifier'] = 'my_app';
+$app['memcached.prefix'] = 'ma_';
+$app['memcached.servers'] = array(
+        array('host' => '127.0.0.1', 'port' => 11211),
+    );
+
+$app->register(new Aptoma\Silex\Provider\MemcachedServicerProvider());
+
+$app['memcached']->set('mykey', 'myvalue');
+
+````
+
+### GuzzleServiceProvider
+
+Extends the base GuzzleServiceProvider to allwo registering global plugins, and also
+adds plugins for generic logging of each request, logging of total requests and a cache
+plugin for HTTP based caching.
+
+````PHP
+$app->register(new GuzzleServiceProvider(), array('guzzle.services' => array()));
+$app->finish(array($app['guzzle.request_logger_plugin'], 'writeLog'));
+
+$app['guzzle.plugins'] = $app->share(
+    function () use ($app) {
+        return array(
+            $app['guzzle.log_plugin'],
+            $app['guzzle.request_logger_plugin'],
+            $app['guzzle.cache_plugin'],
+        );
+    }
+);
+````
+
+### Guzzle HttpCallInterceptorPlugin
+
+Guzzle plugin for use in unit testing to ensure there are no calls made to any
+external services. In your test setup, do something like this:
+
+````PHP
+
+$this->app['guzzle.plugins'] = $this->app->share(
+    $this->app->extend(
+        'guzzle.plugins',
+        function (array $plugins, $app) {
+            $plugins[] = new HttpCallInterceptorPlugin($app['logger']);
+
+            return $plugins;
+        }
+    )
+);
+
+// Intercept errors and fail tests, if you don't do this, you'll most often get
+// a rather cryptic error message
+$this->app->error(
+    function (HttpCallToBackendException $e) use ($testCase) {
+        $testCase->fail($e->getMessage());
+    },
+    10
+);
+
+$this->app->error(
+    function (BatchTransferException $e) use ($testCase) {
+        $testCase->fail($e->getMessage());
+    },
+    10
+);
+````

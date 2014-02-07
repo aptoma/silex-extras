@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.2.0
+-----
+
+* New: Add `MemcachedServiceProvider`
+* New: Add `GuzzleServiceProvider` and related helper classes for logging and tests
+
 1.1.3
 -----
 
@@ -9,7 +15,7 @@ CHANGELOG
 1.1.2
 -----
 
-* Enhancement: JsonErrorHandler now handles all exception types, not just HttpExpcetions.
+* Enhancement: JsonErrorHandler now handles all exception types, not just HttpExpcetions
 
 1.1.1
 -----
