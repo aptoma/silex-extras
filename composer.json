@@ -4,6 +4,7 @@
     "description": "Collection of common stuff for Silex powered applications",
     "keywords": ["silex"],
     "homepage": "https://github.com/aptoma/silex-extras",
+    "license": "MIT",
     "autoload": {
         "psr-0": {
             "Aptoma": "src/"
