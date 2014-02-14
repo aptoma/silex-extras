@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.2.3
+-----
+
+* Bugfix: Make 1.2.2 compatible with stable silex branch.
+
 1.2.2
 -----
 

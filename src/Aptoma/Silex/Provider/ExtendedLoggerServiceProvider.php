@@ -32,7 +32,11 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
         );
 
         $app['monolog.handler'] = function () use ($app) {
-            $level = MonologServiceProvider::translateLevel($app['monolog.level']);
+            if (method_exists('Silex\Provider\MonologServiceProvider', 'translateLevel')) {
+                $level = MonologServiceProvider::translateLevel($app['monolog.level']);
+            } else {
+                $level = $app['monolog.level'];
+            }
             $streamHandler = new StreamHandler($app['monolog.logfile'], $level);
             $streamHandler->setFormatter($app['monolog.formatter']);
 
