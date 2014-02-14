@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+1.2.2
+-----
+
+* New: Add `SingleLineFormatter` for ensuring log entries don't span multiple lines
+* Enhancement: `ExtendedLoggerServiceProvider` now uses SingleLineFormatter, unless you override `monolog.formatter`
+
+1.2.1
+-----
+
+Add license to prepare for Packagist release.
+
 1.2.0
 -----
 

@@ -4,11 +4,13 @@ namespace Aptoma\Silex\Provider;
 
 use Aptoma\Log\ExtraContextProcessor;
 use Aptoma\Log\RequestProcessor;
+use Aptoma\Monolog\Formatter\SingleLineFormatter;
 use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\PsrLogMessageProcessor;
 use Silex\Application;
+use Silex\Provider\MonologServiceProvider;
 use Silex\ServiceProviderInterface;
 
 /**
@@ -23,6 +25,20 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['monolog.formatter'] = $app->share(
+            function () {
+                return new SingleLineFormatter();
+            }
+        );
+
+        $app['monolog.handler'] = function () use ($app) {
+            $level = MonologServiceProvider::translateLevel($app['monolog.level']);
+            $streamHandler = new StreamHandler($app['monolog.logfile'], $level);
+            $streamHandler->setFormatter($app['monolog.formatter']);
+
+            return $streamHandler;
+        };
+
         $app['logger'] = $app->share(
             $app->extend(
                 'logger',
