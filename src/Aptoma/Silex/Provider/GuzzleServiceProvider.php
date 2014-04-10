@@ -3,6 +3,7 @@
 namespace Aptoma\Silex\Provider;
 
 use Aptoma\Guzzle\Plugin\RequestLogger\RequestLoggerPlugin;
+use Aptoma\Guzzle\Plugin\RequestToken\RequestTokenPlugin;
 use Aptoma\Log\MonologGuzzleLogAdapter;
 use Doctrine\Common\Cache\MemcachedCache;
 use Guzzle\Cache\DoctrineCacheAdapter;
@@ -46,6 +47,12 @@ class GuzzleServiceProvider extends BaseGuzzleServiceProvider
         $app['guzzle.request_logger_plugin'] = $app->share(
             function () use ($app) {
                 return new RequestLoggerPlugin($app['logger']);
+            }
+        );
+
+        $app['guzzle.request_token_plugin'] = $app->share(
+            function () use ($app) {
+                return new RequestTokenPlugin($app['request_token'], $app['request_stack']);
             }
         );
 

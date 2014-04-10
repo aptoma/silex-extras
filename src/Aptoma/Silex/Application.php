@@ -34,6 +34,7 @@ class Application extends BaseApplication
 
     public function __construct(array $values = array())
     {
+        $values['request_token'] = $this->generateRequestToken();
         $values = array_merge($this->defaultValues, $values);
         parent::__construct($values);
 
@@ -119,5 +120,17 @@ class Application extends BaseApplication
             )
         );
         $this->register(new ExtendedLoggerServiceProvider());
+    }
+
+    /**
+     * Generate unique identifier for this request
+     *
+     * The token should be a string without any spaces.
+     *
+     * @return string
+     */
+    protected function generateRequestToken()
+    {
+        return uniqid();
     }
 }

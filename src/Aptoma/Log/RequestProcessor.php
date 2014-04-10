@@ -20,10 +20,10 @@ class RequestProcessor
     private $token;
     private $clientIp;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, $token = null)
     {
         $this->app = $app;
-        $this->token = uniqid();
+        $this->token = $token ?: uniqid();
     }
 
     public function __invoke(array $record)

@@ -227,9 +227,13 @@ $app['memcached']->set('mykey', 'myvalue');
 
 ### GuzzleServiceProvider
 
-Extends the base GuzzleServiceProvider to allwo registering global plugins, and also
-adds plugins for generic logging of each request, logging of total requests and a cache
-plugin for HTTP based caching.
+Extends the base GuzzleServiceProvider to allow registering global plugins, and also
+adds a few plugins:
+
+- generic logging of each request
+- logging of total requests
+- adding of request token header to outgoing requests
+- cache plugin for HTTP based caching
 
 ````PHP
 $app->register(new GuzzleServiceProvider(), array('guzzle.services' => array()));
@@ -240,6 +244,7 @@ $app['guzzle.plugins'] = $app->share(
         return array(
             $app['guzzle.log_plugin'],
             $app['guzzle.request_logger_plugin'],
+            $app['guzzle.request_token_plugin'],
             $app['guzzle.cache_plugin'],
         );
     }

@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.3.0
+-----
+
+* New: Add `RequestTokenPlugin` for adding and forwarding request token headers.
+* BC: `RequestTokenPlugin` needs `RequestStack` introduced in Symfony 2.4
+
 1.2.3
 -----
 
