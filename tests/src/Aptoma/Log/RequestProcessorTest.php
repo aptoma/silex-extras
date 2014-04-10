@@ -5,6 +5,8 @@ namespace Aptoma\Log;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\SecurityContext;
 
 class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,15 +19,10 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $requestStack->push($request);
         $app['request_stack'] = $requestStack;
 
-        $fakeToken = $this->getMock('\FakeContext', array('getUsername'));
-        $fakeToken->expects($this->once())
-            ->method('getUsername')
-            ->will($this->returnValue('testuser'));
+        $token = new AnonymousToken('key', 'testuser');
+        $context = $this->getSecurityContextMock();
+        $context->setToken($token);
 
-        $context = $this->getMock('\FakeContext', array('getToken'));
-        $context->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue($fakeToken));
         $app['security'] = $context;
 
         $processor = new RequestProcessor($app);
@@ -35,19 +32,28 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('testuser', $record['extra']['user']);
     }
 
-    public function testSetEmptyUsernameWhenNoContextIsFound()
+    public function testInvokeShouldSetEmptyUsernameWhenNoContextIsFound()
     {
         $app = new Application();
         $processor = new RequestProcessor($app);
 
-        $context = $this->getMock('\FakeContext', array('getToken'));
-        $context->expects($this->once())
-            ->method('getToken')
-            ->will($this->returnValue(null));
+        $context = $this->getSecurityContextMock();
         $app['security'] = $context;
 
         $record = $processor(array());
 
         $this->assertEquals('', $record['extra']['user']);
+    }
+
+    /**
+     * @return SecurityContext
+     */
+    private function getSecurityContextMock()
+    {
+        $context = new SecurityContext(
+            $this->getMock('Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface'),
+            $this->getMock('Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface')
+        );
+        return $context;
     }
 }

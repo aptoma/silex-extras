@@ -3,6 +3,8 @@ namespace Aptoma\Log;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 /**
  * RequestProcessor adds extra information about the request.
@@ -20,6 +22,7 @@ class RequestProcessor
     private $app;
     private $token;
     private $clientIp;
+    private $remoteRequestToken;
 
     public function __construct(Application $app, $token = null)
     {
@@ -29,36 +32,32 @@ class RequestProcessor
 
     public function __invoke(array $record)
     {
-        $record['extra']['clientIp'] = $this->getClientIp();
+        $record['extra']['clientIp'] = $this->getClientIp($this->app['request_stack']);
         if ($this->app->offsetExists('security')) {
-            $record['extra']['user'] = $this->getUsername();
+            $record['extra']['user'] = $this->getUsername($this->app['security']);
         }
         $record['extra']['token'] = $this->token;
 
-        /** @var Request $request */
-        $request = $this->app['request_stack']->getCurrentRequest();
-        if ($request && null !== $remoteRequestToken = $request->headers->get('X-Remote-Request-Token')) {
-            $record['extra']['remoteRequestToken'] = $remoteRequestToken;
-        }
+        $record = $this->addRemoteRequestToken($record, $this->app['request_stack']);
 
         return $record;
     }
 
-    private function getClientIp()
+    private function getClientIp(RequestStack $requestStack)
     {
         if (!$this->clientIp) {
-            if ($this->app['request_stack']->getCurrentRequest()) {
-                $this->clientIp = $this->app['request_stack']->getCurrentRequest()->getClientIp();
+            if ($requestStack->getCurrentRequest()) {
+                $this->clientIp = $requestStack->getCurrentRequest()->getClientIp();
             }
         }
 
         return $this->clientIp;
     }
 
-    private function getUsername()
+    private function getUsername(SecurityContextInterface $securityContext)
     {
         try {
-            $token = $this->app['security']->getToken();
+            $token = $securityContext->getToken();
             if ($token) {
                 return $token->getUsername();
             }
@@ -66,5 +65,22 @@ class RequestProcessor
         }
 
         return '';
+    }
+
+    private function addRemoteRequestToken($record, RequestStack $requestStack)
+    {
+        if (!$this->remoteRequestToken) {
+            $request = $requestStack->getCurrentRequest();
+            if ($request && null !== $remoteRequestToken = $request->headers->get('X-Remote-Request-Token')) {
+                $this->remoteRequestToken = $remoteRequestToken;
+            }
+        }
+
+        if ($this->remoteRequestToken) {
+            $record['extra']['remoteRequestToken'] = $this->remoteRequestToken;
+            return $record;
+        }
+
+        return $record;
     }
 }
