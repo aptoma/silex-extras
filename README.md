@@ -11,7 +11,6 @@ stuff in a similar manner whenever we do something.
 
 - Log processor for adding extra context to logs
 - ServiceProvider for rich logging in Logstash format
-- SingleLineFormatter for forced single line log entries
 - Base Application class for doing common stuff we always do in Silex applications
 - Error handler that outputs stuff as json if `Accept: application/json`
 - TestToolkit to bootstrap functional testing of Silex applications

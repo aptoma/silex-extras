@@ -4,7 +4,7 @@ namespace Aptoma\Silex\Provider;
 
 use Aptoma\Log\ExtraContextProcessor;
 use Aptoma\Log\RequestProcessor;
-use Aptoma\Monolog\Formatter\SingleLineFormatter;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -27,7 +27,7 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
     {
         $app['monolog.formatter'] = $app->share(
             function () {
-                return new SingleLineFormatter();
+                return new LineFormatter();
             }
         );
 

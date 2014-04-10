@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.4.0
+-----
+
+BC: `SingleLineFormatter` for Monolog is removed. Use Monolog's `LineFormatter@~1.8.0` instead.
+
 1.3.2
 -----
 
