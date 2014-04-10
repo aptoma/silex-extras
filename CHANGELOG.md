@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+1.3.2
+-----
+
+* Bugfix: RemoteRequestToken is cached in the processor, so it's available for all later log entries
+
+1.3.1
+-----
+
+* Enhancement: RequestProcessor now adds remoteRequestToken if available.
+
 1.3.0
 -----
 
