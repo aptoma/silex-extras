@@ -27,12 +27,14 @@ class MonologGuzzleLogAdapter extends AbstractLogAdapter
         $response = $extras['response'];
         $priority = $this->getPriorityFromResponse($response);
         $context = $this->getContextFromResponse($response);
+        $context['event'] = 'request.complete';
 
         $this->log->addRecord($priority, $message, $context);
 
         if ($response->isError()) {
             /** @var Request $request */
             $request = $extras['request'];
+            $context['event'] = 'request.error';
             $this->log->addRecord(
                 $response->isClientError() ? Logger::WARNING : Logger::ERROR,
                 sprintf(
