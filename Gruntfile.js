@@ -102,7 +102,8 @@ module.exports = function (grunt) {
     grunt.registerTask('phpcs', 'PHP Codesniffer', 'exec:phpcs');
     grunt.registerTask('phpmd', 'PHP Mess Detector', 'exec:phpmd');
     grunt.registerTask('install', 'Install all project dependencies', ['exec:npm-install', 'exec:composer-install', 'exec:bundle-install']);
-    grunt.registerTask('default', ['phpunit']);
+    grunt.registerTask('default', ['qa']);
+    grunt.registerTask('qa', ['exec:composer-install', 'phpunit', 'phpcs', 'phpmd']);
     grunt.registerTask('jenkins', ['exec:ci-prepare', 'phpunit-ci', 'phpcs', 'phpmd']);
 }
 ;
