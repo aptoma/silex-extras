@@ -2,6 +2,7 @@
 namespace Aptoma\Log;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * RequestProcessor adds extra information about the request.
@@ -33,6 +34,12 @@ class RequestProcessor
             $record['extra']['user'] = $this->getUsername();
         }
         $record['extra']['token'] = $this->token;
+
+        /** @var Request $request */
+        $request = $this->app['request_stack']->getCurrentRequest();
+        if ($request && null !== $remoteRequestToken = $request->headers->get('X-Remote-Request-Token')) {
+            $record['extra']['remoteRequestToken'] = $remoteRequestToken;
+        }
 
         return $record;
     }
