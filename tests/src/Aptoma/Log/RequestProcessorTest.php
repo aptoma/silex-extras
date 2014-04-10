@@ -4,15 +4,18 @@ namespace Aptoma\Log;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 {
     public function testInvoke()
     {
         $app = new Application();
-        $app['request'] = function () {
-            return new Request(array(), array(), array(), array(), array(), array('REMOTE_ADDR' => '127.0.0.1'));
-        };
+        $request = new Request;
+        $request->server->set('REMOTE_ADDR', '127.0.0.1');
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+        $app['request_stack'] = $requestStack;
 
         $fakeToken = $this->getMock('\FakeContext', array('getUsername'));
         $fakeToken->expects($this->once())

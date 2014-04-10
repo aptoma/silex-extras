@@ -40,12 +40,8 @@ class RequestProcessor
     private function getClientIp()
     {
         if (!$this->clientIp) {
-            try {
-                $this->clientIp = $this->app['request']->getClientIp();
-            } catch (\RuntimeException $e) {
-                // Will be reached if we are not in a request context
-                // This only happens if we log stuff before starting to handle the request,
-                // or if we don't log anything before the `finish` application middleware.
+            if ($this->app['request_stack']->getCurrentRequest()) {
+                $this->clientIp = $this->app['request_stack']->getCurrentRequest()->getClientIp();
             }
         }
 
