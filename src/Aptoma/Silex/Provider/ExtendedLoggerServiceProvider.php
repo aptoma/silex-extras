@@ -27,7 +27,7 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
     {
         $app['monolog.formatter'] = $app->share(
             function () {
-                return new LineFormatter();
+                return new LineFormatter(null, 'Y-m-d H:i:s.u');
             }
         );
 

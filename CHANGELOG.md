@@ -5,6 +5,7 @@ CHANGELOG
 -----
 
 BC: `SingleLineFormatter` for Monolog is removed. Use Monolog's `LineFormatter@~1.8.0` instead.
+Enhancement: Default `ExtendLoggerServiceProvider` monolog formatter now includes microseconds.
 
 1.3.2
 -----
