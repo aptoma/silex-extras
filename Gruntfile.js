@@ -6,6 +6,8 @@
 module.exports = function (grunt) {
     'use strict';
 
+    require('time-grunt')(grunt);
+
     // Project configuration.
     grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
@@ -50,6 +52,10 @@ module.exports = function (grunt) {
                         '--log-junit build/logs/junit.xml'
                 },
 
+                'phpunit-travis': {
+                    cmd: 'vendor/bin/phpunit --coverage-clover build/logs/clover.xml'
+                },
+
                 // http://www.squizlabs.com/php-codesniffer
                 'phpcs': {
                     cmd: function () {
@@ -58,14 +64,19 @@ module.exports = function (grunt) {
                     }
                 },
 
-                // http://phpmd.org/documentation/index.html
-                'phpmd-cli': {
+                'phpcs-travis': {
                     cmd: function () {
-                        return 'mkdir -p build/reports && vendor/bin/phpmd ' + grunt.config.data.dirs.phpmd.join(',') + ' text phpmd.xml --suffixes=php';
+                        return 'vendor/bin/phpcs --standard=PSR2 --extensions=php ' + grunt.config.data.dirs.phpcs.join(' ');
                     }
                 },
 
                 'phpmd': {
+                    cmd: function () {
+                        return 'vendor/bin/phpmd ' + grunt.config.data.dirs.phpmd.join(',') + ' text phpmd.xml --suffixes=php';
+                    }
+                },
+
+                'phpmd-ci': {
                     cmd: function () {
                         return 'mkdir -p build/reports && vendor/bin/phpmd ' + grunt.config.data.dirs.phpmd.join(',') + ' xml phpmd.xml --suffixes=php --reportfile build/reports/phpmd.xml';
                     }
@@ -104,6 +115,7 @@ module.exports = function (grunt) {
     grunt.registerTask('install', 'Install all project dependencies', ['exec:npm-install', 'exec:composer-install', 'exec:bundle-install']);
     grunt.registerTask('default', ['qa']);
     grunt.registerTask('qa', ['exec:composer-install', 'phpunit', 'phpcs', 'phpmd']);
-    grunt.registerTask('jenkins', ['exec:ci-prepare', 'phpunit-ci', 'phpcs', 'phpmd']);
+    grunt.registerTask('jenkins', ['exec:ci-prepare', 'phpunit-ci', 'phpcs', 'exec:phpmd-ci']);
+    grunt.registerTask('travis', ['exec:composer-install', 'exec:phpunit-travis', 'exec:phpcs-travis', 'phpmd']);
 }
 ;

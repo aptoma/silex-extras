@@ -1,6 +1,9 @@
 Silex Extras
 ============
 
+[![Build Status](https://travis-ci.org/aptoma/silex-extras.svg)](https://travis-ci.org/aptoma/silex-extras)
+[![Coverage Status](https://img.shields.io/coveralls/aptoma/silex-extras.svg)](https://coveralls.io/r/aptoma/silex-extras)
+
 Package consisting of reusable stuff for Silex powered applications.
 
 It is collection of various services that will ease bootsrapping new Silex

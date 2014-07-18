@@ -1,5 +1,6 @@
 {
     "name": "silex-extras",
+    "repository": "https://github.com/aptoma/silex-extras.git",
     "version": "1.0.0",
     "engines": {
         "node": ">=0.8.0"
@@ -7,6 +8,7 @@
     "devDependencies": {
         "grunt": "~0.4.0",
         "grunt-cli": "~0.1",
-        "grunt-exec": "~0.4"
+        "grunt-exec": "~0.4",
+        "time-grunt": "^0.4.0"
     }
 }
