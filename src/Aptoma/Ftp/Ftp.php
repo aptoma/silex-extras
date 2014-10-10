@@ -196,17 +196,31 @@ class Ftp
 
         return true;
     }
-
-    /**
-     * @return resource
-     */
-    private function getConnection()
+    
+	/**
+	 * @return resource
+	 * @throws Exception\FtpException
+	 */
+	private function getConnection()
     {
         if (!$this->connection) {
             $this->connection = ftp_connect($this->hostname);
-            ftp_login($this->connection, $this->username, $this->password);
+	        if ($this->connection) {
+		        ftp_login($this->connection, $this->username, $this->password);
+	        } else {
+		        throw new FtpException("Error connecting to FTP server.");
+	        }
         }
 
         return $this->connection;
     }
+
+    /**
+     * @param $state
+     * @return bool
+    */
+    public function setPassiveMode($state) {
+        return ftp_pasv($this->getConnection(), $state);
+    }
 }
+
