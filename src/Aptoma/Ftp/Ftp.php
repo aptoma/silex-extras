@@ -216,7 +216,7 @@ class Ftp
     }
 
     /**
-     * @param $state bool
+     * @param bool $state
      * @return bool
     */
     public function setPassiveMode($state) 
@@ -224,4 +224,3 @@ class Ftp
         return ftp_pasv($this->getConnection(), $state);
     }
 }
-
