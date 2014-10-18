@@ -2,12 +2,8 @@
 
 namespace Aptoma\Silex;
 
-use App\Twig\Extension\AppExtension;
 use Aptoma\JsonErrorHandler;
 use Aptoma\Silex\Provider\ExtendedLoggerServiceProvider;
-use Guzzle\Log\MessageFormatter;
-use Guzzle\Log\MonologLogAdapter;
-use Guzzle\Plugin\Log\LogPlugin;
 use Silex\Application as BaseApplication;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
@@ -93,7 +89,7 @@ class Application extends BaseApplication
                 $app->extend(
                     'twig',
                     function (\Twig_Environment $twig) use ($app) {
-                        $twig->addExtension(new AppExtension($app));
+                        $twig->addExtension(new \App\Twig\Extension\AppExtension($app));
 
                         return $twig;
                     }

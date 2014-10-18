@@ -16,11 +16,19 @@ class MonologGuzzleLogAdapter extends AbstractLogAdapter
     /** @var  Logger */
     protected $log;
 
+    /**
+     * @param Logger $logObject
+     */
     public function __construct(Logger $logObject)
     {
         $this->log = $logObject;
     }
 
+    /**
+     * @param string $message
+     * @param int $priority Priority is ignored, since its value is extracted from the response
+     * @param null $extras
+     */
     public function log($message, $priority = LOG_INFO, $extras = null)
     {
         /** @var Response $response */
@@ -48,6 +56,10 @@ class MonologGuzzleLogAdapter extends AbstractLogAdapter
         }
     }
 
+    /**
+     * @param Response $response
+     * @return int
+     */
     private function getPriorityFromResponse(Response $response)
     {
         if ($response->isServerError() || $response->getInfo('total_time') > 5) {
@@ -69,7 +81,7 @@ class MonologGuzzleLogAdapter extends AbstractLogAdapter
 
         foreach ($headersToLookFor as $headerName) {
             if ($response->hasHeader($headerName)) {
-                $extraFields[$headerName] = $response->getHeader($headerName, true);
+                $extraFields[$headerName] = (string)$response->getHeader($headerName);
             }
         }
 
