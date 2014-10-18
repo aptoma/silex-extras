@@ -32,6 +32,15 @@ class Ftp
     }
 
     /**
+     * @param bool $state
+     * @return bool
+     */
+    public function setPassiveMode($state)
+    {
+        return ftp_pasv($this->getConnection(), $state);
+    }
+
+    /**
      * @param $path
      */
     public function mkdir($path)
