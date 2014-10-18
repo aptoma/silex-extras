@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.5.1
+-----
+
+* Enhancement: Add passive mode support to `Ftp`
+
 1.5.0
 -----
 
