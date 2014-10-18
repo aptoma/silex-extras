@@ -208,11 +208,16 @@ class Ftp
 
     /**
      * @return resource
+     * @throws Exception\FtpException
      */
     private function getConnection()
     {
         if (!$this->connection) {
             $this->connection = ftp_connect($this->hostname);
+            if (!$this->connection) {
+                throw new FtpException(sprintf('Error connecting to FTP server at %s.', $this->hostname));
+            }
+
             ftp_login($this->connection, $this->username, $this->password);
         }
 
