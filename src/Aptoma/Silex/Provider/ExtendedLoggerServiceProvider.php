@@ -6,6 +6,7 @@ use Aptoma\Log\ExtraContextProcessor;
 use Aptoma\Log\RequestProcessor;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\LogstashFormatter;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\PsrLogMessageProcessor;
@@ -32,6 +33,9 @@ class ExtendedLoggerServiceProvider implements ServiceProviderInterface
         );
 
         $app['monolog.handler'] = function () use ($app) {
+            if (!$app['monolog.logfile']) {
+                return new NullHandler();
+            }
             if (method_exists('Silex\Provider\MonologServiceProvider', 'translateLevel')) {
                 $level = MonologServiceProvider::translateLevel($app['monolog.level']);
             } else {
