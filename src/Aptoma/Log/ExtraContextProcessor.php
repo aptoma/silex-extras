@@ -1,8 +1,6 @@
 <?php
 namespace Aptoma\Log;
 
-use Silex\Application;
-
 /**
  * ExtraContextProcessor adds provided extras to every record processed.
  * @author Gunnar Lium <gunnar@aptoma.com>

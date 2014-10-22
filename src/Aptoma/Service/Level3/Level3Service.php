@@ -9,7 +9,6 @@ use Aptoma\Service\Level3\Exception\UploadException;
 use Aptoma\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -27,7 +26,6 @@ class Level3Service implements StorageInterface
     private $tmpFolder;
     private $publicFolder;
     private $publicUrl;
-    private $maxUploadAttempts = 1;
     private $acceptedImageFormats = array('image/jpeg', 'image/png');
     private $uploadDisabled = true;
     private $deleteLocalCopyAfterUpload = false;
@@ -64,9 +62,6 @@ class Level3Service implements StorageInterface
         }
         if (isset($options['accepted_image_formats'])) {
             $this->acceptedImageFormats = $options['accepted_image_formats'];
-        }
-        if (isset($options['max_upload_attempts'])) {
-            $this->maxUploadAttempts = $options['max_upload_attempts'];
         }
         if (isset($options['upload_disabled'])) {
             $this->uploadDisabled = $options['upload_disabled'];

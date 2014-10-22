@@ -2,8 +2,6 @@
 
 namespace Aptoma\Silex\Provider;
 
-use Aptoma\Ftp\Ftp;
-use Aptoma\Service\Level3\Level3Service;
 use Aptoma\Storage\FileStorage;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
