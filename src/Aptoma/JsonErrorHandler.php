@@ -9,26 +9,26 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * JsonErrorHandler is able to capture exceptions and do smart stuff with them.
  *
- * The current implementation only formats the response as JSON if the request
- * accepts JSON as content type.
+ * Unless you set `$handleNonJsonRequests` to true in the constructor, only requests
+ * with an `Accept: application/json` header will be handled.
  *
  * @author Gunnar Lium <gunnar@aptoma.com>
  */
 class JsonErrorHandler
 {
-    /**
-     * @var Application
-     */
+    /** @var Application */
     private $app;
 
-    /**
-     * @var Request
-     */
+    /** @var Request */
     private $request;
 
-    public function __construct(Application $app)
+    /** @var bool */
+    private $handleNonJsonRequests;
+
+    public function __construct(Application $app, $handleNonJsonRequests = false)
     {
         $this->app = $app;
+        $this->handleNonJsonRequests = $handleNonJsonRequests;
     }
 
     public function setRequest(Request $request)
@@ -48,7 +48,7 @@ class JsonErrorHandler
             }
         }
 
-        if (!in_array('application/json', $this->request->getAcceptableContentTypes())) {
+        if (!$this->shouldHandleRequest()) {
             return null;
         }
 
@@ -87,5 +87,17 @@ class JsonErrorHandler
             500,
             array('Content-Type' => 'application/json')
         );
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldHandleRequest()
+    {
+        if ($this->handleNonJsonRequests) {
+            return true;
+        }
+
+        return in_array('application/json', $this->request->getAcceptableContentTypes());
     }
 }

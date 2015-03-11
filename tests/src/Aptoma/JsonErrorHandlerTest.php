@@ -7,7 +7,7 @@ use Aptoma\TestToolkit\BaseWebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class ErrorHandlerTest extends BaseWebTestCase
+class JsonErrorHandlerTest extends BaseWebTestCase
 {
 
     public function testHandleShouldReturnNullIfRequestDoesNotAcceptJsonResponse()
@@ -19,6 +19,20 @@ class ErrorHandlerTest extends BaseWebTestCase
         $errorHandler->setRequest($request);
 
         $this->assertNull($errorHandler->handle(new HttpException(404), 404));
+    }
+
+    public function testHandleShouldReturnHandleNonJsonAcceptHeaderWhenForceHandleIsEnabled()
+    {
+        $request = new Request();
+        $request->headers->set('Accept', 'application/xml');
+
+        $errorHandler = new JsonErrorHandler($this->app, true);
+        $errorHandler->setRequest($request);
+
+        $this->assertInstanceOf(
+            '\Symfony\Component\HttpFoundation\JsonResponse',
+            $errorHandler->handle(new HttpException(404), 404)
+        );
     }
 
     public function testHandleShouldReturnNullIfNoValidRequestIsAvailable()

@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.0
+-----
+
+* Added: `JsonErrorHandler` now supports an extra argumenent to enable handling of errors regardless of accept header
+
 1.5.1
 -----
 
