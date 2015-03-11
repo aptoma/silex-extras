@@ -83,13 +83,7 @@ module.exports = function (grunt) {
                 },
 
                 'composer-install': {
-                    cmd: 'composer --dev install'
-                },
-
-                'ci-prepare': {
-                    cmd: 'curl -s https://getcomposer.org/installer | php' +
-                        '&& php composer.phar --dev install' +
-                        '&& rm composer.phar '
+                    cmd: 'composer install'
                 },
 
                 'npm-install': {
@@ -115,7 +109,6 @@ module.exports = function (grunt) {
     grunt.registerTask('install', 'Install all project dependencies', ['exec:npm-install', 'exec:composer-install', 'exec:bundle-install']);
     grunt.registerTask('default', ['qa']);
     grunt.registerTask('qa', ['exec:composer-install', 'phpunit', 'phpcs', 'phpmd']);
-    grunt.registerTask('jenkins', ['exec:ci-prepare', 'phpunit-ci', 'phpcs', 'exec:phpmd-ci']);
     grunt.registerTask('travis', ['exec:composer-install', 'exec:phpunit-travis', 'exec:phpcs-travis', 'phpmd']);
 }
 ;
