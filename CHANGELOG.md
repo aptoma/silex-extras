@@ -1,10 +1,11 @@
 CHANGELOG
 =========
 
-2.*.*
+2.0.1
 -----
 
 * Added: `MonologGuzzleLogAdapter` now add a context entry for responseTime
+* Improved: `PredisCache` now handles serialization
 
 2.0.0
 -----

@@ -3,8 +3,8 @@
 
 namespace Aptoma\Silex\Provider;
 
+use Aptoma\Cache\PredisCache;
 use Doctrine\Common\Cache\MemcachedCache;
-use Doctrine\Common\Cache\PredisCache;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
