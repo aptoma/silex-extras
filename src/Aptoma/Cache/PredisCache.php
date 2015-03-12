@@ -2,10 +2,12 @@
 
 namespace Aptoma\Cache;
 
+use Doctrine\Common\Cache\PredisCache as DoctrinePredisCache;
+
 /**
  * Aptoma\Cache\PredisCache extends the Doctrine Predis cache to add serialization
  */
-class PredisCache extends \Doctrine\Common\Cache\PredisCache
+class PredisCache extends DoctrinePredisCache
 {
     protected function doFetch($id)
     {
