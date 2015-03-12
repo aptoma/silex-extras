@@ -31,18 +31,6 @@ class MemcachedServiceProvider implements ServiceProviderInterface
                 return $memcached;
             }
         );
-
-        $app['cache'] = $app->share(
-            function () use ($app) {
-                if (!class_exists('\Doctrine\Common\Cache\MemcachedCache')) {
-                    throw new \Exception('You need to include doctrine/common in order to use the cache service');
-                }
-                $cache = new MemcachedCache();
-                $cache->setMemcached($app['memcached']);
-
-                return $cache;
-            }
-        );
     }
 
     /**

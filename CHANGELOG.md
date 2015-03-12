@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.0.0
+-----
+
+* Added: `CacheServiceProvider` for exposing `Doctrine\Cache` compatible cache implemenations
+* Added: `PredisClientServiceProvider` for exposing a `Predis\Client` service.
+* Improved: Guzzle cache plugin now reads cache implementation from `$app['cache']`, so you can configure it to use something other than Memcached.
+* BC: The `cache` service is now moved to `CacheServiceProvider`. It still returns Memcached by default, but you need to register the CacheServiceProvider to make it available.
+
 1.6.0
 -----
 

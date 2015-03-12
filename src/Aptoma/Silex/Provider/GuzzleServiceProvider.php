@@ -73,13 +73,10 @@ class GuzzleServiceProvider extends BaseGuzzleServiceProvider
 
         $app['guzzle.cache_plugin'] = $app->share(
             function () use ($app) {
-                $cache = new MemcachedCache();
-                $cache->setMemcached($app['memcached']);
-
                 return new CachePlugin(
                     array(
                         'storage' => new DefaultCacheStorage(
-                            new DoctrineCacheAdapter($cache),
+                            new DoctrineCacheAdapter($app['cache']),
                             '',
                             $app['cache.default_ttl']
                         )

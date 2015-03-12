@@ -22,7 +22,7 @@ stuff in a similar manner whenever we do something.
 - Ftp upload abstraction, basically a wrapper around native FTP functionality
 - Level3 upload service, for uploading stuff to Level3
 - ConsoleLoggerServiceProvider, for integrating the logger with the console
-- MemcachedServiceProvider
+- CacheServiceProvider, for Memcached and Redis implementations of Doctrin Cache (can also be used standalone)
 - GuzzleServiceProvider for extra Guzzle features
 - Guzzle HttpCallInterceptorPlugin for testing with Guzzle services
 
@@ -207,11 +207,26 @@ $app->register(
 );
 ````
 
+### CacheServiceProvider
+
+Registers services for `cache.memcached` and `cache.predis`, as well as a generic
+`cache`, which can be configured to return either of these (Memcached by default).
+
+````PHP
+
+$app->register(new Aptoma\Silex\Provider\MemcachedServicerProvider());
+$app->register(new Aptoma\Silex\Provider\CacheServicerProvider());
+
+$app['cache']->save('mykey', 'myvalue');
+
+````
+
+See below for config options for Memcached.
+
 ### MemcachedServiceProvider
 
 Registers Memcached as a service, and takes care of prefixes and persistent connections.
 It returns an instance of \Memcached.
-It also provides a generic cache compatible with Doctrine\Common\Cache.
 
 ````PHP
 
@@ -224,6 +239,23 @@ $app['memcached.servers'] = array(
 $app->register(new Aptoma\Silex\Provider\MemcachedServicerProvider());
 
 $app['memcached']->set('mykey', 'myvalue');
+
+````
+
+### PredisServiceProvider
+
+Registers Predis as a service. It returns an instance of \Predis\Client.
+
+````PHP
+
+$app['redis.host'] = '127.0.0.1';
+$app['redis.port'] = 6379;
+$app['redis.prefix'] = 'prefix::';
+$app['redis.database'] = 0;
+
+$app->register(new Aptoma\Silex\Provider\PredisClientServicerProvider());
+
+$app['predis.client']->set('mykey', 'myvalue');
 
 ````
 
