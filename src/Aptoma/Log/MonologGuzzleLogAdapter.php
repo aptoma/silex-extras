@@ -27,7 +27,7 @@ class MonologGuzzleLogAdapter extends AbstractLogAdapter
     /**
      * @param string $message
      * @param int $priority Priority is ignored, since its value is extracted from the response
-     * @param null $extras
+     * @param array $extras
      */
     public function log($message, $priority = LOG_INFO, $extras = null)
     {
