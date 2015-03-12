@@ -85,6 +85,8 @@ class MonologGuzzleLogAdapter extends AbstractLogAdapter
             }
         }
 
+        $extraFields['responseTime'] = $response->getInfo('total_time');
+
         return $extraFields;
     }
 }

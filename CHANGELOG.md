@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.*.*
+-----
+
+* Added: `MonologGuzzleLogAdapter` now add a context entry for responseTime
+
 2.0.0
 -----
 
