@@ -8,7 +8,11 @@ language: php
 
 php:
   - 5.3
-  - 5.4
+  - 5.5
+  - 7
+
+services:
+  - redis-server
 
 cache:
   directories:
@@ -27,7 +31,7 @@ before_install:
 install:
   - npm install
 before_script:
-  - phpenv config-add php.ini
+  - if [ -f php_$TRAVIS_PHP_VERSION.ini ]; then phpenv config-add php_$TRAVIS_PHP_VERSION.ini; fi
   - mkdir -p build/logs
 
 script:
