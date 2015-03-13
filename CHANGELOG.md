@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.0.2
+-----
+
+* Improved: `PredisCache` now handles both serialized and unserialized data on fetch
+
 2.0.1
 -----
 
