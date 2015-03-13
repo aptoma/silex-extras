@@ -269,6 +269,9 @@ adds a few plugins:
 - adding of request token header to outgoing requests
 - cache plugin for HTTP based caching
 
+To configure which cache storage to use, define `$app['guzzle.default_cache']`,
+which should be a string referencing the cache service to use, ie. 'cache.memcached'.
+
 ````PHP
 $app->register(new GuzzleServiceProvider(), array('guzzle.services' => array()));
 $app->finish(array($app['guzzle.request_logger_plugin'], 'writeLog'));

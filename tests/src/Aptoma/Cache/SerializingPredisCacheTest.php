@@ -2,20 +2,20 @@
 
 namespace src\Aptoma\Cache;
 
-use Aptoma\Cache\PredisCache;
+use Aptoma\Cache\SerializingPredisCache;
 use Predis\Client;
 
-class PredisCacheTest extends \PHPUnit_Framework_TestCase
+class SerializingPredisCacheTest extends \PHPUnit_Framework_TestCase
 {
     /** @var Client */
     private $redisClient;
-    /** @var PredisCache */
+    /** @var SerializingPredisCache */
     private $cache;
 
     protected function setUp()
     {
         $this->redisClient = $this->createClient();
-        $this->cache = new PredisCache($this->redisClient);
+        $this->cache = new SerializingPredisCache($this->redisClient);
         $this->cache->setNamespace('test');
         $this->cache->flushAll();
     }
@@ -31,7 +31,7 @@ class PredisCacheTest extends \PHPUnit_Framework_TestCase
     public function testFetchShouldHandleSerializedData()
     {
         $redisClient = $this->createClient();
-        $cache = new PredisCache($redisClient);
+        $cache = new SerializingPredisCache($redisClient);
         $cache->save('foo', 'bar');
         $value = $cache->fetch('foo');
 

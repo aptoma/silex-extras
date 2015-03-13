@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.0.3
+-----
+
+* Improved: Caching is updated to expose both serializing and nonserializing Predis storage, to accomodate Guzzle.
+
 2.0.2
 -----
 

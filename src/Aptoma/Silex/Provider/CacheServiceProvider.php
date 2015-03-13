@@ -3,8 +3,9 @@
 
 namespace Aptoma\Silex\Provider;
 
-use Aptoma\Cache\PredisCache;
+use Aptoma\Cache\SerializingPredisCache;
 use Doctrine\Common\Cache\MemcachedCache;
+use Doctrine\Common\Cache\PredisCache;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -39,6 +40,15 @@ class CacheServiceProvider implements ServiceProviderInterface
                     throw new \Exception('You need to include doctrine/common in order to use the cache service');
                 }
                 return new PredisCache($app['predis.client']);
+            }
+        );
+
+        $app['cache.predis_serializer'] = $app->share(
+            function () use ($app) {
+                if (!class_exists('\Doctrine\Common\Cache\PredisCache')) {
+                    throw new \Exception('You need to include doctrine/common in order to use the cache service');
+                }
+                return new SerializingPredisCache($app['predis.client']);
             }
         );
 
