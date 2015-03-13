@@ -20,7 +20,8 @@
         "symfony/security": "~2.3",
         "symfony/finder": "~2.2",
         "symfony/filesystem": "~2.2",
-        "doctrine/common": "~2.4"
+        "doctrine/common": "~2.4",
+        "predis/predis": "~1.0"
     },
     "suggest": {
         "ext-ftp": "Allows using Ftp services.",

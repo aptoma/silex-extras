@@ -11,7 +11,12 @@ class PredisCache extends DoctrinePredisCache
 {
     protected function doFetch($id)
     {
-        return unserialize(parent::doFetch($id));
+        $value = parent::doFetch($id);
+        try {
+            return unserialize($value);
+        } catch (\Exception $e) {
+            return $value;
+        }
     }
 
     protected function doSave($id, $data, $lifeTime = 0)
