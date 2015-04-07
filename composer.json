@@ -20,14 +20,14 @@
         "symfony/security": "~2.3",
         "symfony/finder": "~2.2",
         "symfony/filesystem": "~2.2",
-        "doctrine/common": "~2.4",
-        "predis/predis": "~1.0"
+        "doctrine/common": "~2.4"
     },
     "suggest": {
         "ext-ftp": "Allows using Ftp services.",
         "guzzle/guzzle": "In order to use Guzzle service provider",
         "guzzle/silex-provider": "In order to use Guzzle service provider",
-        "doctrine/common": "In order to use Doctrine\\Common\\Cache compatible Memcached"
+        "doctrine/common": "In order to use Doctrine\\Common\\Cache compatible Memcached",
+        "predis/predis": "In order to use Redis cache with Doctrine"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
