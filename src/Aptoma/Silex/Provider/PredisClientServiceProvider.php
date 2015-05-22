@@ -17,6 +17,8 @@ class PredisClientServiceProvider implements ServiceProviderInterface
                         'host' => $app['redis.host'],
                         'port' => $app['redis.port'],
                         'database' => $app['redis.database'],
+                        'persistent' => $app['redis.persistent'],
+                        'timeout' => $app['redis.timeout'],
                     ),
                     array(
                         'prefix' => $app['redis.prefix']
@@ -31,6 +33,8 @@ class PredisClientServiceProvider implements ServiceProviderInterface
         $app['redis.port'] = 6379;
         $app['redis.prefix'] = 'prefix::';
         $app['redis.database'] = 0;
+        $app['redis.persistent'] = false;
+        $app['redis.timeout'] = 5.0;
     }
 
     /**

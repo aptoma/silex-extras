@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.0.4
+-----
+
+* Improved: Add options for persistent connections and timeout to PredisClientServiceProvider.
+
 2.0.3
 -----
 
