@@ -141,7 +141,7 @@ those with one line of code.
 This class should include functionality that we _always_ use, meaning it's not
 a collection of "nice to haves".
 
-### Aptoma\JsonErroHandler
+### Aptoma\JsonErrorHandler
 
 This class simply formats exceptions as `JsonResponse`s, provided the client
 has sent an `Accept: application/json` header. It will be loaded automatically
