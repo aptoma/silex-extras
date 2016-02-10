@@ -32,7 +32,11 @@ class RequestProcessor
 
     public function __invoke(array $record)
     {
-        $record['extra']['clientIp'] = $this->getClientIp($this->app['request_stack']);
+        try {
+            $record['extra']['clientIp'] = $this->getClientIp($this->app['request_stack']);
+        } catch (\Exception $e) {
+            $record['extra']['clientIp'] = '';
+        }
         if ($this->app->offsetExists('security')) {
             $record['extra']['user'] = $this->getUsername($this->app['security']);
         }
