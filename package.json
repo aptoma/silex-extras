@@ -1,7 +1,7 @@
 {
     "name": "silex-extras",
     "repository": "https://github.com/aptoma/silex-extras.git",
-    "version": "1.0.0",
+    "version": "2.0.7",
     "engines": {
         "node": ">=0.8.0"
     },

@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.0.7
+-----
+
+* Bugfix: Catch error when trying to retrieve client IP for logging purposes
+
 2.0.6
 -----
 
