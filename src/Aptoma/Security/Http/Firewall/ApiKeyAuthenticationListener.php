@@ -2,6 +2,7 @@
 
 namespace Aptoma\Security\Http\Firewall;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -30,7 +31,7 @@ class ApiKeyAuthenticationListener implements ListenerInterface
      */
     public function handle(GetResponseEvent $event)
     {
-        $apiKey = $event->getRequest()->get('apikey', false);
+        $apiKey = $this->getApiKeyFromQueryOrHeader($event->getRequest());
 
         if (false === $apiKey) {
             return;
@@ -62,5 +63,29 @@ class ApiKeyAuthenticationListener implements ListenerInterface
         }
 
         $event->setResponse(new Response($content, 403, $headers));
+    }
+
+    /**
+     * @param Request $request
+     * @return string|boolean
+     */
+    private function getApiKeyFromQueryOrHeader(Request $request)
+    {
+        $apiKey = $request->get('apikey', false);
+        if ($apiKey) {
+            return $apiKey;
+        }
+
+        $apiKeyHeader = $request->headers->get('authorization');
+        if (!($apiKeyHeader && mb_strpos($apiKeyHeader, 'apikey') === 0)) {
+            return false;
+        }
+        $apiKeyHeadersParts = explode(' ', $apiKeyHeader);
+
+        if (!isset($apiKeyHeadersParts[1])) {
+            return false;
+        }
+
+        return $apiKeyHeadersParts[1];
     }
 }

@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.1.0
+-----
+
+* Added: `ApiKeyAuthenticationListener` now also looks for apikey in Authorization header (`Authorization: apikey supersecretkey`)
+
 2.0.7
 -----
 
