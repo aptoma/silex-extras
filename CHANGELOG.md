@@ -1,9 +1,10 @@
 CHANGELOG
 =========
 
-2.1.0
+3.0.0
 -----
 
+* Changed: Require ~2.8 version of Symfony components
 * Added: `ApiKeyAuthenticationListener` now also looks for apikey in Authorization header (`Authorization: apikey supersecretkey`)
 
 2.0.7
