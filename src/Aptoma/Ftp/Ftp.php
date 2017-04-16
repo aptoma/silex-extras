@@ -30,6 +30,15 @@ class Ftp
         $this->password = $password;
         $this->logger = $logger;
     }
+    
+    /**
+     * @param bool $state
+     * @return bool
+     */
+    public function setPassiveMode($state)
+    {
+        return ftp_pasv($this->getConnection(), $state);
+    }
 
     /**
      * @param bool $state
