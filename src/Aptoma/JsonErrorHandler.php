@@ -2,7 +2,7 @@
 
 namespace Aptoma;
 
-use Silex\Application;
+use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -25,7 +25,7 @@ class JsonErrorHandler
     /** @var bool */
     private $handleNonJsonRequests;
 
-    public function __construct(Application $app, $handleNonJsonRequests = false)
+    public function __construct(Container $app, $handleNonJsonRequests = false)
     {
         $this->app = $app;
         $this->handleNonJsonRequests = $handleNonJsonRequests;
@@ -42,7 +42,7 @@ class JsonErrorHandler
     {
         if (!$this->request) {
             try {
-                $this->request = $this->app['request'];
+                $this->request = $this->app['request_stack']->getCurrentRequest();
             } catch (\RuntimeException $e) {
                 return null;
             }

@@ -6,8 +6,9 @@ use Aptoma\Log\ExtraContextProcessor;
 use Monolog\Logger;
 use Silex\Application;
 use Silex\Provider\MonologServiceProvider;
+use PHPUnit\Framework\TestCase;
 
-class ExtendedLoggerServiceProviderTest extends \PHPUnit_Framework_TestCase
+class ExtendedLoggerServiceProviderTest extends TestCase
 {
     public function testLoggerShouldNotAddLogstashHandlerIfLogstashFileIsUnset()
     {
@@ -71,5 +72,6 @@ class ExtendedLoggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $app->register(new ExtendedLoggerServiceProvider());
 
         $app->boot();
+        $this->assertTrue(true);
     }
 }

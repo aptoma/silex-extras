@@ -1,11 +1,11 @@
 <?php
 
-
 namespace Aptoma\Log;
 
 use \Silex\Application;
+use PHPUnit\Framework\TestCase;
 
-class ExtraContextProcessorTest extends \PHPUnit_Framework_TestCase
+class ExtraContextProcessorTest extends TestCase
 {
 
     /**

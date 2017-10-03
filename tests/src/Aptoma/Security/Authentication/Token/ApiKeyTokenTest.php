@@ -4,8 +4,9 @@ namespace Aptoma\Security\Authentication\Token;
 
 use Silex\Application;
 use Aptoma\Security\Authentication\Token\ApiKeyToken;
+use PHPUnit\Framework\TestCase;
 
-class ApiKeyTokenTest extends \PHPUnit_Framework_TestCase
+class ApiKeyTokenTest extends TestCase
 {
     public function testConstructWithApiKeyShouldNotAuthenticateToken()
     {

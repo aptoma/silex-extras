@@ -2,8 +2,8 @@
 
 namespace Aptoma\Silex\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Aptoma\Security\Http\Firewall\ApiKeyAuthenticationListener;
 use Aptoma\Security\Provider\ApiKeyAuthenticationProvider;
 
@@ -16,28 +16,24 @@ use Aptoma\Security\Provider\ApiKeyAuthenticationProvider;
  */
 class ApiKeyServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['security.authentication_listener.factory.api_key'] = $app->protect(
             function ($name, $options) use ($app) {
                 unset($options); // not in use
-                $app['security.authentication_provider.'.$name.'.api_key'] = $app->share(
-                    function () use ($app) {
-                        return new ApiKeyAuthenticationProvider(
-                            $app['api_key.user_provider'],
-                            $app['api_key.encoder']
-                        );
-                    }
-                );
+                $app['security.authentication_provider.'.$name.'.api_key'] = function () use ($app) {
+                    return new ApiKeyAuthenticationProvider(
+                        $app['api_key.user_provider'],
+                        $app['api_key.encoder']
+                    );
+                };
 
-                $app['security.authentication_listener.'.$name.'.api_key'] = $app->share(
-                    function () use ($app) {
-                        return new ApiKeyAuthenticationListener(
-                            $app['security'],
-                            $app['security.authentication_manager']
-                        );
-                    }
-                );
+                $app['security.authentication_listener.'.$name.'.api_key'] = function () use ($app) {
+                    return new ApiKeyAuthenticationListener(
+                        $app['security'],
+                        $app['security.authentication_manager']
+                    );
+                };
 
                 return array(
                     'security.authentication_provider.' . $name . '.api_key',
@@ -47,13 +43,5 @@ class ApiKeyServiceProvider implements ServiceProviderInterface
                 );
             }
         );
-    }
-
-    /**
-     * @param \Silex\Application $app
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function boot(Application $app)
-    {
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Aptoma\Cache;
 
+use Predis\ClientInterface;
 use Doctrine\Common\Cache\PredisCache as DoctrinePredisCache;
 
 /**
@@ -9,9 +10,21 @@ use Doctrine\Common\Cache\PredisCache as DoctrinePredisCache;
  */
 class SerializingPredisCache extends DoctrinePredisCache
 {
+    public function __construct(ClientInterface $client)
+    {
+        parent::__construct($client);
+
+        // Client is private in DoctrinePredisCache, so we have to overload the constructor to get access to it
+        $this->client = $client;
+    }
+
     protected function doFetch($id)
     {
-        $value = parent::doFetch($id);
+        $value = $this->client->get($id);
+
+        if (null === $value) {
+            return false;
+        }
 
         if (!is_string($value)) {
             return $value;
@@ -22,10 +35,5 @@ class SerializingPredisCache extends DoctrinePredisCache
         } catch (\Exception $e) {
             return $value;
         }
-    }
-
-    protected function doSave($id, $data, $lifeTime = 0)
-    {
-        return parent::doSave($id, serialize($data), $lifeTime);
     }
 }

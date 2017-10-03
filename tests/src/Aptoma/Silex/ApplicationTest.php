@@ -6,8 +6,9 @@ use Aptoma\Silex\Mocks\Application as MockApplication;
 use Monolog\Handler\TestHandler;
 use Silex\Provider\MonologServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit\Framework\TestCase;
 
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends TestCase
 {
     /**
      * @dataProvider logExecTimeDataProvider
@@ -106,10 +107,10 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         require_once 'Mocks/Application.php';
 
         $app = new MockApplication(array('twig.path' => __DIR__, 'twig.options' => array()));
-        $this->assertFalse($app['twig']->hasExtension('app'));
+        $this->assertFalse($app['twig']->hasExtension('App\Twig\Extension\AppExtension'));
 
         require_once 'Mocks/AppExtension.php';
         $app = new MockApplication(array('twig.path' => __DIR__, 'twig.options' => array()));
-        $this->assertTrue($app['twig']->hasExtension('app'));
+        $this->assertTrue($app['twig']->hasExtension('App\Twig\Extension\AppExtension'));
     }
 }

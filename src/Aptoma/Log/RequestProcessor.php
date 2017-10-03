@@ -1,10 +1,10 @@
 <?php
 namespace Aptoma\Log;
 
-use Silex\Application;
+use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * RequestProcessor adds extra information about the request.
@@ -24,7 +24,7 @@ class RequestProcessor
     private $clientIp;
     private $remoteRequestToken;
 
-    public function __construct(Application $app, $token = null)
+    public function __construct(Container $app, $token = null)
     {
         $this->app = $app;
         $this->token = $token ?: uniqid();
@@ -37,8 +37,8 @@ class RequestProcessor
         } catch (\Exception $e) {
             $record['extra']['clientIp'] = '';
         }
-        if ($this->app->offsetExists('security')) {
-            $record['extra']['user'] = $this->getUsername($this->app['security']);
+        if ($this->app->offsetExists('security.token_storage')) {
+            $record['extra']['user'] = $this->getUsername($this->app['security.token_storage']);
         }
         $record['extra']['token'] = $this->token;
 
@@ -58,10 +58,11 @@ class RequestProcessor
         return $this->clientIp;
     }
 
-    private function getUsername(SecurityContextInterface $securityContext)
+    private function getUsername(TokenStorageInterface $tokenStorage)
     {
         try {
-            $token = $securityContext->getToken();
+            $token = $tokenStorage->getToken();
+
             if ($token) {
                 return $token->getUsername();
             }

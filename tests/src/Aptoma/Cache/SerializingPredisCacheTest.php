@@ -4,8 +4,9 @@ namespace src\Aptoma\Cache;
 
 use Aptoma\Cache\SerializingPredisCache;
 use Predis\Client;
+use PHPUnit\Framework\TestCase;
 
-class SerializingPredisCacheTest extends \PHPUnit_Framework_TestCase
+class SerializingPredisCacheTest extends TestCase
 {
     /** @var Client */
     private $redisClient;

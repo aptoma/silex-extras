@@ -6,8 +6,8 @@ namespace Aptoma\Silex\Provider;
 use Aptoma\Cache\SerializingPredisCache;
 use Doctrine\Common\Cache\MemcachedCache;
 use Doctrine\Common\Cache\PredisCache;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 /**
  * CacheServiceProvider exposes a DoctrineCache compatible cache implemenations
@@ -20,53 +20,38 @@ use Silex\ServiceProviderInterface;
  */
 class CacheServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['cache.memcached'] = $app->share(
-            function () use ($app) {
-                if (!class_exists('\Doctrine\Common\Cache\MemcachedCache')) {
-                    throw new \Exception('You need to include doctrine/common in order to use the cache service');
-                }
-                $cache = new MemcachedCache();
-                $cache->setMemcached($app['memcached']);
-
-                return $cache;
+        $app['cache.memcached'] = function () use ($app) {
+            if (!class_exists('\Doctrine\Common\Cache\MemcachedCache')) {
+                throw new \Exception('You need to include doctrine/common in order to use the cache service');
             }
-        );
+            $cache = new MemcachedCache();
+            $cache->setMemcached($app['memcached']);
 
-        $app['cache.predis'] = $app->share(
-            function () use ($app) {
-                if (!class_exists('\Doctrine\Common\Cache\PredisCache')) {
-                    throw new \Exception('You need to include doctrine/common in order to use the cache service');
-                }
-                return new PredisCache($app['predis.client']);
+            return $cache;
+        };
+
+        $app['cache.predis'] = function () use ($app) {
+            if (!class_exists('\Doctrine\Common\Cache\PredisCache')) {
+                throw new \Exception('You need to include doctrine/common in order to use the cache service');
             }
-        );
+            return new PredisCache($app['predis.client']);
+        };
 
-        $app['cache.predis_serializer'] = $app->share(
-            function () use ($app) {
-                if (!class_exists('\Doctrine\Common\Cache\PredisCache')) {
-                    throw new \Exception('You need to include doctrine/common in order to use the cache service');
-                }
-                return new SerializingPredisCache($app['predis.client']);
+        $app['cache.predis_serializer'] = function () use ($app) {
+            if (!class_exists('\Doctrine\Common\Cache\PredisCache')) {
+                throw new \Exception('You need to include doctrine/common in order to use the cache service');
             }
-        );
+            return new SerializingPredisCache($app['predis.client']);
+        };
 
-        $app['cache'] = $app->share(
-            function () use ($app) {
-                if ($app->offsetExists('cache.default')) {
-                    return $app[$app['cache.default']];
-                }
-
-                return $app['memcached'];
+        $app['cache'] = function () use ($app) {
+            if ($app->offsetExists('cache.default')) {
+                return $app[$app['cache.default']];
             }
-        );
-    }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function boot(Application $app)
-    {
+            return $app['memcached'];
+        };
     }
 }

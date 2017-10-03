@@ -37,7 +37,10 @@ class JsonErrorHandlerTest extends BaseWebTestCase
 
     public function testHandleShouldReturnNullIfNoValidRequestIsAvailable()
     {
+        $request = new Request();
+
         $errorHandler = new JsonErrorHandler($this->app);
+        $errorHandler->setRequest($request);
 
         $this->assertNull($errorHandler->handle(new HttpException(404), 404));
     }
@@ -47,7 +50,8 @@ class JsonErrorHandlerTest extends BaseWebTestCase
         $errorHandler = new JsonErrorHandler($this->app);
         $request = new Request();
         $request->headers->set('Accept', 'application/json');
-        $this->app['request'] = $request;
+
+        $this->app['request_stack']->push($request);
 
         $this->assertNotNull($errorHandler->handle(new HttpException(404), 404));
     }
