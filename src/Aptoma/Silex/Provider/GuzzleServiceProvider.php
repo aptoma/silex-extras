@@ -5,11 +5,12 @@ namespace Aptoma\Silex\Provider;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
 use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 /**
  * Extends Guzzle service provider for Silex to provide global plugin sipport
  */
-class GuzzleServiceProvider
+class GuzzleServiceProvider implements ServiceProviderInterface
 {
     /**
      * Register Guzzle with Silex
