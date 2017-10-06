@@ -25,7 +25,7 @@ class GuzzleServiceProvider implements ServiceProviderInterface
             return $stack;
         };
 
-        $app['guzzle'] = function () {
+        $app['guzzle'] = function () use ($app) {
             $client = new HttpClient([
                 'handler' => $app['guzzle.handler_stack']
             ]);
