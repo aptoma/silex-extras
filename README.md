@@ -130,6 +130,8 @@ The console logger overrides the default `monolog.handler` in order to allow set
 a custom log file. If defined, it will use `monolog.console_logfile`, and if not, it
 will fall back to `monolog.logfile`.
 
+This Provider is also available as standalone package: https://github.com/glensc/ConsoleLoggerServiceProvider
+
 ### Aptoma\Silex\Application
 
 This is a base application you can extend. It will add a json formatter for errors,
