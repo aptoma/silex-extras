@@ -12,7 +12,7 @@ use Aptoma\Security\Authentication\Token\ApiKeyToken;
 
 class ApiKeyAuthenticationListenerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHandleShouldAuthenticateToken()
+    public function testHandleShouldAuthenticateTokenFromQueryParameter()
     {
         $token = new ApiKeyToken('key');
 
@@ -28,7 +28,26 @@ class ApiKeyAuthenticationListenerTest extends \PHPUnit_Framework_TestCase
             ->with($token);
 
         $listener = new ApiKeyAuthenticationListener($securityContext, $authenticationManager);
-        $listener->handle($this->getGetResponseEvent());
+        $listener->handle($this->getGetResponseEventWithApiKeyQueryParameter());
+    }
+
+    public function testHandleShouldAuthenticateTokenFromAuthorizationHeader()
+    {
+        $token = new ApiKeyToken('key');
+
+        $authenticationManager = 'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationManagerInterface';
+        $authenticationManager = $this->getMock($authenticationManager);
+        $authenticationManager->expects($this->once())
+            ->method('authenticate')
+            ->will($this->returnValue($token));
+
+        $securityContext = $this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface');
+        $securityContext->expects($this->once())
+            ->method('setToken')
+            ->with($token);
+
+        $listener = new ApiKeyAuthenticationListener($securityContext, $authenticationManager);
+        $listener->handle($this->getGetResponseEventWithApiKeyAuthorizationHeader());
     }
 
     public function testHandleShouldNullifyTokenOnFailure()
@@ -45,12 +64,27 @@ class ApiKeyAuthenticationListenerTest extends \PHPUnit_Framework_TestCase
             ->with(null);
 
          $listener = new ApiKeyAuthenticationListener($securityContext, $authenticationManager);
-         $listener->handle($this->getGetResponseEvent());
+         $listener->handle($this->getGetResponseEventWithApiKeyQueryParameter());
     }
 
-    private function getGetResponseEvent()
+    private function getGetResponseEventWithApiKeyQueryParameter()
     {
         $request = new Request(array('apikey' => 'key'));
+
+        $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $event->expects($this->any())
+            ->method('getRequest')
+            ->will($this->returnValue($request));
+
+        return $event;
+    }
+
+    private function getGetResponseEventWithApiKeyAuthorizationHeader()
+    {
+        $request = new Request();
+        $request->headers->set('Authorization', 'apikey key');
 
         $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
             ->disableOriginalConstructor()
