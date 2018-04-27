@@ -6,9 +6,11 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use PHPUnit\Framework\TestCase;
 
-class RequestProcessorTest extends \PHPUnit_Framework_TestCase
+class RequestProcessorTest extends TestCase
 {
     public function testInvoke()
     {
@@ -19,11 +21,10 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $requestStack->push($request);
         $app['request_stack'] = $requestStack;
 
-        $token = new AnonymousToken('key', 'testuser');
-        $context = $this->getSecurityContextMock();
-        $context->setToken($token);
+        $this->setupSecurityMocks($app);
 
-        $app['security'] = $context;
+        $token = new AnonymousToken('key', 'testuser');
+        $app['security.token_storage']->setToken($token);
 
         $processor = new RequestProcessor($app);
         $record = $processor(array());
@@ -37,8 +38,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $app = new Application();
         $processor = new RequestProcessor($app);
 
-        $context = $this->getSecurityContextMock();
-        $app['security'] = $context;
+        $this->setupSecurityMocks($app);
 
         $record = $processor(array());
 
@@ -46,14 +46,24 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return SecurityContext
+     * @return Application
      */
-    private function getSecurityContextMock()
+    private function setupSecurityMocks(Application $app)
     {
-        $context = new SecurityContext(
-            $this->getMock('Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface'),
-            $this->getMock('Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface')
+        $authenticationManager = $this->createMock(
+            'Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface'
         );
-        return $context;
+        $accessDecisionManager = $this->createMock(
+            'Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface'
+        );
+
+        $app['security.token_storage'] = new TokenStorage();
+        $app['security.authorization_checker'] = new AuthorizationChecker(
+            $app['security.token_storage'],
+            $authenticationManager,
+            $accessDecisionManager
+        );
+
+        return $app;
     }
 }

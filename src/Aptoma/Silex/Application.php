@@ -4,11 +4,11 @@ namespace Aptoma\Silex;
 
 use Aptoma\JsonErrorHandler;
 use Aptoma\Silex\Provider\ExtendedLoggerServiceProvider;
+use Aptoma\Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Application as BaseApplication;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\TwigServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -85,15 +85,13 @@ class Application extends BaseApplication
         );
 
         if (class_exists('\App\Twig\Extension\AppExtension')) {
-            $app['twig'] = $app->share(
-                $app->extend(
-                    'twig',
-                    function (\Twig_Environment $twig) use ($app) {
-                        $twig->addExtension(new \App\Twig\Extension\AppExtension($app));
+            $app['twig'] = $app->extend(
+                'twig',
+                function (\Twig_Environment $twig) use ($app) {
+                    $twig->addExtension(new \App\Twig\Extension\AppExtension($app));
 
-                        return $twig;
-                    }
-                )
+                    return $twig;
+                }
             );
         }
     }

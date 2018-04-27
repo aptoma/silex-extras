@@ -23,7 +23,7 @@ class BaseWebTestCase extends WebTestCase
         }
 
         $app['debug'] = false;
-        $app['exception_handler']->disable();
+        unset($app['exception_handler']);
 
         return $app;
     }

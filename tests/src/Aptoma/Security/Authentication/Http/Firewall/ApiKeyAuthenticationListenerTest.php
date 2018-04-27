@@ -9,25 +9,28 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Aptoma\Security\Authentication\Token\ApiKeyToken;
+use PHPUnit\Framework\TestCase;
 
-class ApiKeyAuthenticationListenerTest extends \PHPUnit_Framework_TestCase
+class ApiKeyAuthenticationListenerTest extends TestCase
 {
     public function testHandleShouldAuthenticateTokenFromQueryParameter()
     {
         $token = new ApiKeyToken('key');
 
         $authenticationManager = 'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationManagerInterface';
-        $authenticationManager = $this->getMock($authenticationManager);
+        $authenticationManager = $this->createMock($authenticationManager);
         $authenticationManager->expects($this->once())
             ->method('authenticate')
             ->will($this->returnValue($token));
 
-        $securityContext = $this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface');
-        $securityContext->expects($this->once())
+        $tokenStorage = $this->createMock(
+            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\Storage\\TokenStorageInterface'
+        );
+        $tokenStorage->expects($this->once())
             ->method('setToken')
             ->with($token);
 
-        $listener = new ApiKeyAuthenticationListener($securityContext, $authenticationManager);
+        $listener = new ApiKeyAuthenticationListener($tokenStorage, $authenticationManager);
         $listener->handle($this->getGetResponseEventWithApiKeyQueryParameter());
     }
 
@@ -36,34 +39,38 @@ class ApiKeyAuthenticationListenerTest extends \PHPUnit_Framework_TestCase
         $token = new ApiKeyToken('key');
 
         $authenticationManager = 'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationManagerInterface';
-        $authenticationManager = $this->getMock($authenticationManager);
+        $authenticationManager = $this->createMock($authenticationManager);
         $authenticationManager->expects($this->once())
             ->method('authenticate')
             ->will($this->returnValue($token));
 
-        $securityContext = $this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface');
-        $securityContext->expects($this->once())
+        $tokenStorage = $this->createMock(
+            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\Storage\\TokenStorageInterface'
+        );
+        $tokenStorage->expects($this->once())
             ->method('setToken')
             ->with($token);
 
-        $listener = new ApiKeyAuthenticationListener($securityContext, $authenticationManager);
+        $listener = new ApiKeyAuthenticationListener($tokenStorage, $authenticationManager);
         $listener->handle($this->getGetResponseEventWithApiKeyAuthorizationHeader());
     }
 
     public function testHandleShouldNullifyTokenOnFailure()
     {
         $authenticationManager = 'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationManagerInterface';
-        $authenticationManager = $this->getMock($authenticationManager);
+        $authenticationManager = $this->createMock($authenticationManager);
         $authenticationManager->expects($this->once())
             ->method('authenticate')
             ->will($this->throwException(new AuthenticationException('Authentication failed')));
 
-        $securityContext = $this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface');
-        $securityContext->expects($this->once())
+        $tokenStorage = $this->createMock(
+            'Symfony\\Component\\Security\\Core\\Authentication\\Token\\Storage\\TokenStorageInterface'
+        );
+        $tokenStorage->expects($this->once())
             ->method('setToken')
             ->with(null);
 
-         $listener = new ApiKeyAuthenticationListener($securityContext, $authenticationManager);
+         $listener = new ApiKeyAuthenticationListener($tokenStorage, $authenticationManager);
          $listener->handle($this->getGetResponseEventWithApiKeyQueryParameter());
     }
 

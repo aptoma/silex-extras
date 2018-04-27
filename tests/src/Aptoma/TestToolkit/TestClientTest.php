@@ -10,7 +10,7 @@ class TestClientTest extends BaseWebTestCase
 {
     public function testPostJson()
     {
-        $client = $this->getMockTestClient();
+        $client = $this->createMockTestClient();
         $client
             ->expects($this->once())
             ->method('request')
@@ -28,7 +28,7 @@ class TestClientTest extends BaseWebTestCase
 
     public function testPutJson()
     {
-        $client = $this->getMockTestClient();
+        $client = $this->createMockTestClient();
         $client
             ->expects($this->once())
             ->method('request')
@@ -60,7 +60,11 @@ class TestClientTest extends BaseWebTestCase
 
     public function testGetJsonDecodedResponseBody()
     {
-        $client = $this->getMock('\Aptoma\TestToolkit\TestClient', array('getResponse'), array($this->app));
+        $client = $this->getMockbuilder('\Aptoma\TestToolkit\TestClient')
+            ->setMethods(array('getResponse'))
+            ->setConstructorArgs(array($this->app))
+            ->getMock();
+
         $data = array('foo' => 'bar');
         $response = new Response(json_encode($data), 200);
         $client
@@ -71,8 +75,11 @@ class TestClientTest extends BaseWebTestCase
         $this->assertEquals($data, $client->getJsonDecodedResponseBody());
     }
 
-    private function getMockTestClient()
+    private function createMockTestClient()
     {
-        return $this->getMock('\Aptoma\TestToolkit\TestClient', array('request'), array($this->app));
+        return $this->getMockBuilder('\Aptoma\TestToolkit\TestClient')
+            ->setMethods(array('request'))
+            ->setConstructorArgs(array($this->app))
+            ->getMock();
     }
 }

@@ -5,8 +5,9 @@ namespace Aptoma\Storage;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use PHPUnit\Framework\TestCase;
 
-class FileStorageTest extends \PHPUnit_Framework_TestCase
+class FileStorageTest extends TestCase
 {
     private $storageDir;
     private $publicUrlTemplate = 'http://www.example.com/files/{assetId}/raw';
@@ -43,6 +44,7 @@ class FileStorageTest extends \PHPUnit_Framework_TestCase
             $service->put($file);
             $this->fail('Put should fail for uploaded file.');
         } catch (FileException $e) {
+            $this->assertTrue(true);
             return;
         }
 

@@ -2,32 +2,30 @@
 
 namespace Aptoma\Silex\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Predis\Client as RedisClient;
 
 class PredisClientServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['predis.client'] = $app->share(
-            function () use ($app) {
-                $redisClient = new RedisClient(
-                    array(
-                        'host' => $app['redis.host'],
-                        'port' => $app['redis.port'],
-                        'database' => $app['redis.database'],
-                        'persistent' => $app['redis.persistent'],
-                        'timeout' => $app['redis.timeout'],
-                    ),
-                    array(
-                        'prefix' => $app['redis.prefix']
-                    )
-                );
+        $app['predis.client'] = function () use ($app) {
+            $redisClient = new RedisClient(
+                array(
+                    'host' => $app['redis.host'],
+                    'port' => $app['redis.port'],
+                    'database' => $app['redis.database'],
+                    'persistent' => $app['redis.persistent'],
+                    'timeout' => $app['redis.timeout'],
+                ),
+                array(
+                    'prefix' => $app['redis.prefix']
+                )
+            );
 
-                return $redisClient;
-            }
-        );
+            return $redisClient;
+        };
 
         $app['redis.host'] = '127.0.0.1';
         $app['redis.port'] = 6379;
@@ -35,12 +33,5 @@ class PredisClientServiceProvider implements ServiceProviderInterface
         $app['redis.database'] = 0;
         $app['redis.persistent'] = false;
         $app['redis.timeout'] = 5.0;
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function boot(Application $app)
-    {
     }
 }
